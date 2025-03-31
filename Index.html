@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luxury Handbag Auction Analysis</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <!-- Vega and Vega-Lite for Altair -->
+    <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        
+        .header {
+            background-color: #8B0000;
+            color: white;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .card {
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border: none;
+            border-radius: 8px;
+        }
+        
+        .card-header {
+            background-color: #f1f1f1;
+            border-bottom: 1px solid #ddd;
+            font-weight: bold;
+        }
+        
+        .filter-section {
+            background-color: #e9ecef;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        
+        .stats-card {
+            text-align: center;
+            border-left: 4px solid #8B0000;
+            transition: transform 0.3s;
+        }
+        
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .chart-container {
+            height: 400px;
+            width: 100%;
+        }
+        
+        .btn-primary {
+            background-color: #8B0000;
+            border-color: #8B0000;
+        }
+        
+        .btn-primary:hover {
+            background-color: #6d0000;
+            border-color: #6d0000;
+        }
+        
+        .top-bags-table {
+            font-size: 0.9rem;
+        }
+        
+        footer {
+            background-color: #343a40;
+            color: white;
+            padding: 20px 0;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1>Luxury Handbag Auction Analysis</h1>
+            <p class="lead">Interactive visualization of Christie's Hong Kong March 2025 auction data</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Stats Row -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card stats-card">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Items</h5>
+                        <h2 id="total-items">{{ stats.total_items }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card">
+                    <div class="card-body">
+                        <h5 class="card-title">Average Price</h5>
+                        <h2 id="avg-price">${{ '%,.2f' % stats.avg_price }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card">
+                    <div class="card-body">
+                        <h5 class="card-title">Highest Price</h5>
+                        <h2 id="max-price">${{ '%,.2f' % stats.max_price }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card">
+                    <div class="card-body">
+                        <h5 class="card-title">Lowest Price</h5>
+                        <h2 id="min-price">${{ '%,.2f' % stats.min_price }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="card filter-section">
+            <div class="card-body">
+                <h4 class="mb-3">Filter Data</h4>
+                <div class="row">
+                    <div class="col-md-5 mb-3">
+                        <label for="brand-select" class="form-label">Brand:</label>
+                        <select class="form-select" id="brand-select">
+                            {% for brand in brands %}
+                            <option value="{{ brand }}">{{ brand }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-5 mb-3">
+                        <label for="color-select" class="form-label">Color:</label>
+                        <select class="form-select" id="color-select">
+                            {% for color in colors %}
+                            <option value="{{ color }}">{{ color }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2 mb-3 d-flex align-items-end">
+                        <button id="apply-filter" class="btn btn-primary w-100">Apply Filters</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Visualizations Row 1 -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">Average Price by Brand</div>
+                    <div class="card-body">
+                        <div id="brand-chart" class="chart-container"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">Average Price by Color</div>
+                    <div class="card-body">
+                        <div id="color-chart" class="chart-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Visualizations Row 2 -->
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">Price Trends Over Years</div>
+                    <div class="card-body">
+                        <div id="year-chart" class="chart-container"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">Top Leathers by Average Price</div>
+                    <div class="card-body">
+                        <div id="leather-chart" class="chart-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Bags Table -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">Top 10 Most Expensive Bags</div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover top-bags-table">
+                                <thead>
+                                    <tr>
+                                        <th>Brand</th>
+                                        <th>Description</th>
+                                        <th>Leather</th>
+                                        <th>Color</th>
+                                        <th>Price (USD)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="top-bags-tbody">
+                                    <!-- Top bags will be loaded here via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Insights Section -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">Key Insights</div>
+                    <div class="card-body">
+                        <ul>
+                            <li>Hermès bags consistently achieve the highest auction prices, especially limited edition and exotic leather designs.</li>
+                            <li>Exotic leathers like alligator and crocodile command significantly higher prices compared to standard leather options.</li>
+                            <li>White, multicolor, and turquoise bags achieve the highest average prices, while silver and yellow are the lowest-performing colors.</li>
+                            <li>Recent years, especially 2021 and beyond, saw an increase in luxury handbag prices, reflecting strong demand.</li>
+                            <li>Most bags sell within or above their estimated price range, showcasing a robust secondary market for luxury handbags.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="mt-5">
+        <div class="container text-center">
+            <p>Luxury Handbag Auction Analysis &copy; 2025 | By Sade Beckles, Patricia Daher, Arisleyda Reyes</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Function to load top bags data
+        function loadTopBags() {
+            fetch('/api/top_bags')
+                .then(response => response.json())
+                .then(data => {
+                    const tbody = document.getElementById('top-bags-tbody');
+                    tbody.innerHTML = '';
+                    
+                    data.forEach(bag => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${bag.Brand}</td>
+                            <td>${bag.Description}</td>
+                            <td>${bag.Leather}</td>
+                            <td>${bag.Color}</td>
+                            <td>$${parseFloat(bag.Sale_Price).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Error loading top bags:', error));
+        }
+
+        // Function to update charts based on filters
+        function updateCharts() {
+            const brand = document.getElementById('brand-select').value;
+            const color = document.getElementById('color-select').value;
+            
+            // Show loading state
+            document.getElementById('brand-chart').innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"></div><p class="mt-2">Loading...</p></div>';
+            document.getElementById('color-chart').innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"></div><p class="mt-2">Loading...</p></div>';
+            document.getElementById('year-chart').innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"></div><p class="mt-2">Loading...</p></div>';
+            document.getElementById('leather-chart').innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"></div><p class="mt-2">Loading...</p></div>';
+            
+            // Fetch filtered data
+            fetch(`/api/filter_data?brand=${brand}&color=${color}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Update stats
+                    document.getElementById('total-items').textContent = data.stats.total_items;
+                    document.getElementById('avg-price').textContent = '$' + parseFloat(data.stats.avg_price).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                    document.getElementById('max-price').textContent = '$' + parseFloat(data.stats.max_price).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                    document.getElementById('min-price').textContent = '$' + parseFloat(data.stats.min_price).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                    
+                    // Update brand chart (Altair)
+                    vegaEmbed('#brand-chart', JSON.parse(data.brand_chart), {actions: false}).catch(console.error);
+                    
+                    // Update other charts (Plotly)
+                    Plotly.newPlot('color-chart', JSON.parse(data.color_chart).data, JSON.parse(data.color_chart).layout, {responsive: true});
+                    Plotly.newPlot('year-chart', JSON.parse(data.year_chart).data, JSON.parse(data.year_chart).layout, {responsive: true});
+                    Plotly.newPlot('leather-chart', JSON.parse(data.leather_chart).data, JSON.parse(data.leather_chart).layout, {responsive: true});
+                })
+                .catch(error => console.error('Error updating charts:', error));
+        }
+
+        // Initialize charts when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load initial brand chart (Altair)
+            vegaEmbed('#brand-chart', JSON.parse('{{ brand_chart | safe }}'), {actions: false}).catch(console.error);
+            
+            // Load initial other charts (Plotly)
+            Plotly.newPlot('color-chart', JSON.parse('{{ color_chart | safe }}').data, JSON.parse('{{ color_chart | safe }}').layout, {responsive: true});
+            Plotly.newPlot('year-chart', JSON.parse('{{ year_chart | safe }}').data, JSON.parse('{{ year_chart | safe }}').layout, {responsive: true});
+            Plotly.newPlot('leather-chart', JSON.parse('{{ leather_chart | safe }}').data, JSON.parse('{{ leather_chart | safe }}').layout, {responsive: true});
+            
+            // Load top bags
+            loadTopBags();
+            
+            // Set up filter button
+            document.getElementById('apply-filter').addEventListener('click', updateCharts);
+        });
+    </script>
+</body>
+</html>
