@@ -1,3 +1,4 @@
+#Flask document 
 from flask import Flask, jsonify, render_template, request
 import sqlite3
 import pandas as pd
@@ -25,11 +26,11 @@ def query_db(query, params=()):
 @app.route('/')
 def home():
     # Get list of brands for the dropdown filter
-    brands = query_db("SELECT DISTINCT Brand FROM auction_data ORDER BY Brand")['Brand'].tolist()
+    brands = query_db("SELECT DISTINCT Brand FROM Christies_HongKong_March25_Sale ORDER BY Brand")['Brand'].tolist()
     brands.insert(0, "All Brands")  # Add "All Brands" option
     
     # Get list of colors for the dropdown filter
-    colors = query_db("SELECT DISTINCT Color FROM auction_data ORDER BY Color")['Color'].tolist()
+    colors = query_db("SELECT DISTINCT Color FROM Christies_HongKong_March25_Sale ORDER BY Color")['Color'].tolist()
     colors.insert(0, "All Colors")  # Add "All Colors" option
     
     # Get price stats for the dashboard header
@@ -39,7 +40,7 @@ def home():
             AVG(Sale_Price) as avg_price, 
             MAX(Sale_Price) as max_price,
             MIN(Sale_Price) as min_price
-        FROM auction_data
+        FROM Christies_HongKong_March25_Sale
     """).iloc[0]
     
     # Create default visualizations (when no filters are applied)
@@ -66,7 +67,7 @@ def filter_data():
     color = request.args.get('color', 'All Colors')
     
     # Build the base query
-    base_query = "SELECT * FROM auction_data"
+    base_query = "SELECT * FROM Christies_HongKong_March25_Sale"
     conditions = []
     params = []
     
@@ -122,7 +123,7 @@ def create_brand_comparison(df=None):
         # If no DataFrame provided, query the database
         df = query_db("""
             SELECT Brand, AVG(Sale_Price) as Avg_Price
-            FROM auction_data
+            FROM Christies_HongKong_March25_Sale
             GROUP BY Brand
             ORDER BY Avg_Price DESC
         """)
@@ -151,7 +152,7 @@ def create_color_comparison(df=None):
         # If no DataFrame provided, query the database
         df = query_db("""
             SELECT Color, AVG(Sale_Price) as Avg_Price
-            FROM auction_data
+            FROM Christies_HongKong_March25_Sale
             GROUP BY Color
             ORDER BY Avg_Price DESC
         """)
@@ -174,7 +175,7 @@ def create_year_trend(df=None):
         # If no DataFrame provided, query the database
         df = query_db("""
             SELECT Year, AVG(Sale_Price) as Avg_Price
-            FROM auction_data
+            FROM Christies_HongKong_March25_Sale
             GROUP BY Year
             ORDER BY Year
         """)
@@ -201,7 +202,7 @@ def create_leather_comparison(df=None):
         # If no DataFrame provided, query the database
         df = query_db("""
             SELECT Leather, AVG(Sale_Price) as Avg_Price
-            FROM auction_data
+            FROM Christies_HongKong_March25_Sale
             GROUP BY Leather
             ORDER BY Avg_Price DESC
             LIMIT 10
@@ -224,7 +225,7 @@ def create_leather_comparison(df=None):
 def get_top_bags():
     df = query_db("""
         SELECT Brand, Description, Leather, Color, Sale_Price 
-        FROM auction_data
+        FROM Christies_HongKong_March25_Sale
         ORDER BY Sale_Price DESC
         LIMIT 10
     """)
@@ -243,10 +244,10 @@ def get_stats():
             AVG(Sale_Price) as avg_price,
             MAX(Sale_Price) as max_price,
             MIN(Sale_Price) as min_price
-        FROM auction_data
+        FROM Christies_HongKong_March25_Sale
     """)
     
-    stats = stats_df.iloc[0].to_dict()
+    stats = stats_df.iloc[0].to_dict()auction_data
     return jsonify(stats)
 
 if __name__ == '__main__':
