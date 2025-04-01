@@ -247,7 +247,7 @@ def get_stats():
         FROM Christies_HongKong_March25_Sale
     """)
     
-    stats = stats_df.iloc[0].to_dict()auction_data
+    stats = stats_df.iloc[0].to_dict()Christies_HongKong_March25_Sale 
     return jsonify(stats)
 
 if __name__ == '__main__':
