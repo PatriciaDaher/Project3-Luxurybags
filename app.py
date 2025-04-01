@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 # Database connection function
 def connect_db():
-    conn = sqlite3.connect('Luxury_handbag_auctions.db')
+    conn = sqlite3.connect('Luxury_handbag_auctions.sqlite')
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -26,21 +26,21 @@ def query_db(query, params=()):
 @app.route('/')
 def home():
     # Get list of brands for the dropdown filter
-    brands = query_db("SELECT DISTINCT Brand FROM Christies_HongKong_March25_Sale ORDER BY Brand")['Brand'].tolist()
+    brands = query_db("SELECT DISTINCT Brand FROM ChristiesHK_Mar25 ORDER BY Brand")['Brand'].tolist()
     brands.insert(0, "All Brands")  # Add "All Brands" option
     
     # Get list of colors for the dropdown filter
-    colors = query_db("SELECT DISTINCT Color FROM Christies_HongKong_March25_Sale ORDER BY Color")['Color'].tolist()
+    colors = query_db("SELECT DISTINCT Color FROM ChristiesHK_Mar25 ORDER BY Color")['Color'].tolist()
     colors.insert(0, "All Colors")  # Add "All Colors" option
     
     # Get price stats for the dashboard header
     price_stats = query_db("""
         SELECT 
             COUNT(*) as total_items,
-            AVG(Sale_Price) as avg_price, 
-            MAX(Sale_Price) as max_price,
-            MIN(Sale_Price) as min_price
-        FROM Christies_HongKong_March25_Sale
+            AVG([Price Realized (USD)]) as avg_price, 
+            MAX([Price Realized (USD)]) as max_price,
+            MIN([Price Realized (USD)]) as min_price
+        FROM ChristiesHK_Mar25
     """).iloc[0]
     
     # Create default visualizations (when no filters are applied)
@@ -67,7 +67,7 @@ def filter_data():
     color = request.args.get('color', 'All Colors')
     
     # Build the base query
-    base_query = "SELECT * FROM Christies_HongKong_March25_Sale"
+    base_query = "SELECT * FROM ChristiesHK_Mar25"
     conditions = []
     params = []
     
@@ -95,9 +95,9 @@ def filter_data():
     
     # Get price stats for the filtered data
     if len(filtered_df) > 0:
-        avg_price = filtered_df['Sale_Price'].mean()
-        max_price = filtered_df['Sale_Price'].max()
-        min_price = filtered_df['Sale_Price'].min()
+        avg_price = filtered_df['[Price Realized (USD)]'].mean()
+        max_price = filtered_df['[Price Realized (USD)]'].max()
+        min_price = filtered_df['[Price Realized (USD)]'].min()
     else:
         avg_price = 0
         max_price = 0
@@ -122,15 +122,15 @@ def create_brand_comparison(df=None):
     if df is None:
         # If no DataFrame provided, query the database
         df = query_db("""
-            SELECT Brand, AVG(Sale_Price) as Avg_Price
-            FROM Christies_HongKong_March25_Sale
+            SELECT Brand, AVG([Price Realized (USD)]) as Avg_Price
+            FROM ChristiesHK_Mar25
             GROUP BY Brand
             ORDER BY Avg_Price DESC
         """)
     else:
         # Otherwise use the provided DataFrame
-        df = df.groupby('Brand')['Sale_Price'].mean().reset_index().rename(
-            columns={'Sale_Price': 'Avg_Price'}).sort_values('Avg_Price', ascending=False)
+        df = df.groupby('Brand')['[Price Realized (USD)]'].mean().reset_index().rename(
+            columns={'[Price Realized (USD)]': 'Avg_Price'}).sort_values('Avg_Price', ascending=False)
     
     # Create a bar chart using Altair (the non-standard library)
     chart = alt.Chart(df).mark_bar().encode(
@@ -151,15 +151,15 @@ def create_color_comparison(df=None):
     if df is None:
         # If no DataFrame provided, query the database
         df = query_db("""
-            SELECT Color, AVG(Sale_Price) as Avg_Price
-            FROM Christies_HongKong_March25_Sale
+            SELECT Color, AVG([Price Realized (USD)]) as Avg_Price
+            FROM ChristiesHK_Mar25
             GROUP BY Color
             ORDER BY Avg_Price DESC
         """)
     else:
         # Otherwise use the provided DataFrame
-        df = df.groupby('Color')['Sale_Price'].mean().reset_index().rename(
-            columns={'Sale_Price': 'Avg_Price'}).sort_values('Avg_Price', ascending=False)
+        df = df.groupby('Color')['[Price Realized (USD)]'].mean().reset_index().rename(
+            columns={'[Price Realized (USD)]': 'Avg_Price'}).sort_values('Avg_Price', ascending=False)
     
     # Create visualization with Plotly
     fig = px.bar(df, x='Color', y='Avg_Price', 
@@ -174,16 +174,16 @@ def create_year_trend(df=None):
     if df is None:
         # If no DataFrame provided, query the database
         df = query_db("""
-            SELECT Year, AVG(Sale_Price) as Avg_Price
-            FROM Christies_HongKong_March25_Sale
+            SELECT Year, AVG([Price Realized (USD)]) as Avg_Price
+            FROM ChristiesHK_Mar25
             GROUP BY Year
             ORDER BY Year
         """)
     else:
         # Otherwise use the provided DataFrame
         if 'Year' in df.columns:
-            df = df.groupby('Year')['Sale_Price'].mean().reset_index().rename(
-                columns={'Sale_Price': 'Avg_Price'}).sort_values('Year')
+            df = df.groupby('Year')['[Price Realized (USD)]'].mean().reset_index().rename(
+                columns={'[Price Realized (USD)]': 'Avg_Price'}).sort_values('Year')
         else:
             # If no Year column, use a dummy DataFrame
             df = pd.DataFrame({'Year': ['No Year Data'], 'Avg_Price': [0]})
@@ -201,16 +201,16 @@ def create_leather_comparison(df=None):
     if df is None:
         # If no DataFrame provided, query the database
         df = query_db("""
-            SELECT Leather, AVG(Sale_Price) as Avg_Price
-            FROM Christies_HongKong_March25_Sale
+            SELECT Leather, AVG([Price Realized (USD)]) as Avg_Price
+            FROM ChristiesHK_Mar25
             GROUP BY Leather
             ORDER BY Avg_Price DESC
             LIMIT 10
         """)
     else:
         # Otherwise use the provided DataFrame
-        df = df.groupby('Leather')['Sale_Price'].mean().reset_index().rename(
-            columns={'Sale_Price': 'Avg_Price'}).sort_values('Avg_Price', ascending=False).head(10)
+        df = df.groupby('Leather')['[Price Realized (USD)]'].mean().reset_index().rename(
+            columns={'[Price Realized (USD)]': 'Avg_Price'}).sort_values('Avg_Price', ascending=False).head(10)
     
     # Create visualization with Plotly
     fig = px.bar(df, x='Leather', y='Avg_Price', 
@@ -224,9 +224,9 @@ def create_leather_comparison(df=None):
 @app.route('/api/top_bags')
 def get_top_bags():
     df = query_db("""
-        SELECT Brand, Description, Leather, Color, Sale_Price 
-        FROM Christies_HongKong_March25_Sale
-        ORDER BY Sale_Price DESC
+        SELECT Brand, Description, Leather, Color, [Price Realized (USD)] 
+        FROM ChristiesHK_Mar25
+        ORDER BY [Price Realized (USD)] DESC
         LIMIT 10
     """)
     
@@ -235,20 +235,27 @@ def get_top_bags():
 # API endpoint to get database statistics
 @app.route('/api/stats')
 def get_stats():
-    stats_df = query_db("""
-        SELECT 
-            COUNT(*) as total_items,
-            COUNT(DISTINCT Brand) as brand_count,
-            COUNT(DISTINCT Color) as color_count,
-            COUNT(DISTINCT Leather) as leather_count,
-            AVG(Sale_Price) as avg_price,
-            MAX(Sale_Price) as max_price,
-            MIN(Sale_Price) as min_price
-        FROM Christies_HongKong_March25_Sale
-    """)
-    
-    stats = stats_df.iloc[0].to_dict()Christies_HongKong_March25_Sale 
-    return jsonify(stats)
+    try:
+        stats_df = query_db("""
+            SELECT 
+                COUNT(*) as total_items,
+                COUNT(DISTINCT Brand) as brand_count,
+                COUNT(DISTINCT Color) as color_count,
+                COUNT(DISTINCT Leather) as leather_count,
+                AVG([Price Realized (USD)]) as avg_price,
+                MAX([Price Realized (USD)]) as max_price,
+                MIN([Price Realized (USD)]) as min_price
+            FROM ChristiesHK_Mar25
+        """)
+        
+        if stats_df is not None and not stats_df.empty:
+            stats = stats_df.iloc[0].to_dict()
+            return jsonify(stats)
+        else:
+            return jsonify({"error": "No data found"}), 404
+                
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
