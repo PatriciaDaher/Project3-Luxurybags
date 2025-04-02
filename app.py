@@ -50,7 +50,7 @@ def home():
     leather_chart = create_leather_comparison()
     
     # Render the template with initial data
-    return render_template('index.html', 
+    return render_template('/index.html', 
                           brands=brands,
                           colors=colors,
                           brand_chart=brand_chart,
