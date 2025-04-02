@@ -39,7 +39,8 @@ def home():
             COUNT(*) as total_items,
             AVG([Price Realized (USD)]) as avg_price, 
             MAX([Price Realized (USD)]) as max_price,
-            MIN([Price Realized (USD)]) as min_price
+            MAX([Lower Estimate (USD)]) as lower_estimate,
+            MAX([Higher Estimate (USD)]) as higher_estimate
         FROM ChristiesHK_Mar25
     """).iloc[0]
     
@@ -97,11 +98,15 @@ def filter_data():
     if len(filtered_df) > 0:
         avg_price = filtered_df['[Price Realized (USD)]'].mean()
         max_price = filtered_df['[Price Realized (USD)]'].max()
-        min_price = filtered_df['[Price Realized (USD)]'].min()
+        lower_estimate = filtered_df['[Lower Estimate (USD)'].max()
+        higher_estimate = filtered_df['[Higher Estimate (USD)'].max()  # Using max() to get the highest estimate
     else:
         avg_price = 0
         max_price = 0
-        min_price = 0
+        lower_estimate = 0
+        higher_estimate = 0
+
+            
     
     # Return the JSON data with all charts
     return jsonify({
@@ -113,7 +118,8 @@ def filter_data():
             'total_items': len(filtered_df),
             'avg_price': float(avg_price),
             'max_price': float(max_price),
-            'min_price': float(min_price)
+            'lower_estimate': float(lower_estimate),
+            'higher_estimate': float(higher_estimate)
         }
     })
 
@@ -256,6 +262,14 @@ def get_stats():
                 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+# Add this to your Flask app temporarily for debugging
+@app.route('/debug')
+def debug():
+    df = query_db("SELECT * FROM ChristiesHK_Mar25 LIMIT 5")
+    return jsonify({
+        'column_types': {col: str(df[col].dtype) for col in df.columns},
+        'estimate_sample': df['Estimate (USD)'].tolist()
+    })
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)

@@ -122,8 +122,8 @@
             <div class="col-md-3">
                 <div class="card stats-card">
                     <div class="card-body">
-                        <h5 class="card-title">Lowest Price</h5>
-                        <h2 id="min-price">${{ stats.min_price }}</h2>
+                        <h5 class="card-title">Highest Price Estimate</h5>
+                        <h2 id="estimate"> ${{stats.lower_estimate}} - ${{stats.higher_estimate}}</h2>
                     </div>
                 </div>
             </div>
@@ -293,8 +293,8 @@
                     // Update stats
                     document.getElementById('total-items').textContent = data.stats.total_items;
                     document.getElementById('avg-price').textContent = '$' + parseFloat(data.stats.avg_price).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-                    document.getElementById('max-price').textContent = '$' + parseFloat(data.stats.max_price).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-                    document.getElementById('min-price').textContent = '$' + parseFloat(data.stats.min_price).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                    document.getElementById('higher-price').textContent = '$' + parseFloat(data.stats.higher_price).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                    document.getElementById('lower-price').textContent = '$' + parseFloat(data.stats.lower_price).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
                     
                     // Update brand chart (Altair)
                     vegaEmbed('#brand-chart', JSON.parse(data.brand_chart), {actions: false}).catch(console.error);
