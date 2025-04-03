@@ -42,8 +42,8 @@ Navigate to the project directory: cd project project name Project3-Luxurybags
 
 
 ### Interactive Features
-- **Visualize Data**: Use the dropdown menus at the top of the dashboard to filter by brand and/or color
-- **Apply Filters**: Click the "Apply Filters" button to update all visualizations based on your selections
+- **Visualize Data**: Use the dropdown menue to view Sales Analysis based on options such as Sale Results, Brand, Year, Color, and Leather type. 
+- **Apply Filters**: Click the "Apply Filters" button to update all visualizations based on your selections.
 - **Interactive Charts**: Hover over select chart elements to see detailed tooltips.
 
 
@@ -56,7 +56,7 @@ Navigate to the project directory: cd project project name Project3-Luxurybags
 
 
 ## Database
-The Sqlite database contains auction data with information about lot number, brand, type, color, leather, hardware, year manufactured, estimates, and realized prices.
+The Sqlite database contains auction data with information about lots number, brand, type, color, leather, hardware, year manufactured, estimates, and realized prices.
 
 
 ## Visualizations & Interactions  (HTML Content)   
@@ -84,7 +84,7 @@ Visualizations 4: Color
 	b- Plot Chart 2: Price Realized for Each Bag by Brand Based on Color
 	b- Plot Chart 2: Average Price Realized by Brand Based on Color
 Visualization 5: Leather
-a- Bar Chart 1: Average Price Realized by Color
+   a- Bar Chart 1: Average Price Realized by Color
 
 
 ## Ethical Considerations
