@@ -1,4 +1,3 @@
-#Flask document 
 from flask import Flask, jsonify, render_template, request
 import sqlite3
 import pandas as pd
@@ -29,10 +28,6 @@ def home():
     brands = query_db("SELECT DISTINCT Brand FROM ChristiesHK_Mar25 ORDER BY Brand")['Brand'].tolist()
     brands.insert(0, "All Brands")  # Add "All Brands" option
     
-    # Get list of colors for the dropdown filter
-    colors = query_db("SELECT DISTINCT Color FROM ChristiesHK_Mar25 ORDER BY Color")['Color'].tolist()
-    colors.insert(0, "All Colors")  # Add "All Colors" option
-    
     # Get price stats for the dashboard header
     price_stats = query_db("""
         SELECT 
@@ -53,7 +48,6 @@ def home():
     # Render the template with initial data
     return render_template('/index.html', 
                           brands=brands,
-                          colors=colors,
                           brand_chart=brand_chart,
                           color_chart=color_chart,
                           year_chart=year_chart,
@@ -65,7 +59,6 @@ def home():
 def filter_data():
     # Get filter parameters from the request
     brand = request.args.get('brand', 'All Brands')
-    color = request.args.get('color', 'All Colors')
     
     # Build the base query
     base_query = "SELECT * FROM ChristiesHK_Mar25"
@@ -76,10 +69,6 @@ def filter_data():
     if brand != "All Brands":
         conditions.append("Brand = ?")
         params.append(brand)
-    
-    if color != "All Colors":
-        conditions.append("Color = ?")
-        params.append(color)
     
     # Combine conditions if any
     if conditions:
