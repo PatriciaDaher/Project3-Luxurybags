@@ -12,7 +12,7 @@ Our analysis offers valuable insights for collectors, investors, and industry pr
 ## Repository Contents
 ```
 Templates
-Index.html
+|  |_ Index.html
 .DS_Store
 Christies Hong Kong March 2025 Cleaned .csv
 Cleaned_Enhanced_Luxury_Bag_Data.csv
