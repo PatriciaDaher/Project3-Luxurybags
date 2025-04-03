@@ -135,15 +135,15 @@
                 <h4 class="mb-3">Auction Analysis</h4>
                 <div class="row">
                     <div class="col-md-10 mb-3">
-                        <label for="brand-select" class="form-label">Brand:</label>
-                        <select class="form-select" id="brand-select">
-                            {% for brand in brands %}
-                            <option value="{{ brand }}">{{ brand }}</option>
+                        <label for="filter-select" class="form-label">Select Analysis Type:</label>
+                        <select class="form-select" id="filter-select">
+                            {% for option in filter_options %}
+                            <option value="{{ option }}">{{ option }}</option>
                             {% endfor %}
                         </select>
                     </div>
                     <div class="col-md-2 mb-3 d-flex align-items-end">
-                        <button id="apply-filter" class="btn btn-primary w-100">Apply Filters</button>
+                        <button id="apply-filter" class="btn btn-primary w-100">Apply Filter</button>
                     </div>
                 </div>
             </div>
@@ -259,7 +259,7 @@
                             <td>${bag.Description}</td>
                             <td>${bag.Leather}</td>
                             <td>${bag.Color}</td>
-                            <td>$${parseFloat(bag.Sale_Price).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                            <td>$${parseFloat(bag['Price Realized (USD)']).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                         `;
                         tbody.appendChild(row);
                     });
@@ -269,7 +269,7 @@
 
         // Function to update charts based on filters
         function updateCharts() {
-            const brand = document.getElementById('brand-select').value;
+            const filterType = document.getElementById('filter-select').value;
             
             // Show loading state
             document.getElementById('brand-chart').innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"></div><p class="mt-2">Loading...</p></div>';
@@ -278,7 +278,7 @@
             document.getElementById('leather-chart').innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"></div><p class="mt-2">Loading...</p></div>';
             
             // Fetch filtered data
-            fetch(`/api/filter_data?brand=${brand}`)
+            fetch(`/api/filter_data?filter_type=${encodeURIComponent(filterType)}`)
                 .then(response => response.json())
                 .then(data => {
                     // Update stats

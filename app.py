@@ -24,9 +24,14 @@ def query_db(query, params=()):
 # Home route that renders our main HTML template
 @app.route('/')
 def home():
-    # Get list of brands for the dropdown filter
-    brands = query_db("SELECT DISTINCT Brand FROM ChristiesHK_Mar25 ORDER BY Brand")['Brand'].tolist()
-    brands.insert(0, "All Brands")  # Add "All Brands" option
+    # Create filter options for the dropdown menu
+    filter_options = [
+        "General Stats",
+        "Year",
+        "Brand",
+        "Color",
+        "Leather Type"
+    ]
     
     # Get price stats for the dashboard header
     price_stats = query_db("""
@@ -47,7 +52,7 @@ def home():
     
     # Render the template with initial data
     return render_template('/index.html', 
-                          brands=brands,
+                          filter_options=filter_options,
                           brand_chart=brand_chart,
                           color_chart=color_chart,
                           year_chart=year_chart,
@@ -58,24 +63,27 @@ def home():
 @app.route('/api/filter_data')
 def filter_data():
     # Get filter parameters from the request
-    brand = request.args.get('brand', 'All Brands')
+    filter_type = request.args.get('filter_type', 'General Stats')
     
-    # Build the base query
-    base_query = "SELECT * FROM ChristiesHK_Mar25"
-    conditions = []
-    params = []
-    
-    # Add filter conditions if selected
-    if brand != "All Brands":
-        conditions.append("Brand = ?")
-        params.append(brand)
-    
-    # Combine conditions if any
-    if conditions:
-        base_query += " WHERE " + " AND ".join(conditions)
-    
-    # Execute the query
-    filtered_df = query_db(base_query, params)
+    # Build the base query based on filter type
+    if filter_type == "General Stats":
+        # Show all data for general stats
+        filtered_df = query_db("SELECT * FROM ChristiesHK_Mar25")
+    elif filter_type == "Brand":
+        # Get all brands data
+        filtered_df = query_db("SELECT * FROM ChristiesHK_Mar25 ORDER BY Brand")
+    elif filter_type == "Color":
+        # Get all colors data
+        filtered_df = query_db("SELECT * FROM ChristiesHK_Mar25 ORDER BY Color")
+    elif filter_type == "Leather Type":
+        # Get all leather types data
+        filtered_df = query_db("SELECT * FROM ChristiesHK_Mar25 ORDER BY Leather")
+    elif filter_type == "Year":
+        # Get all years data
+        filtered_df = query_db("SELECT * FROM ChristiesHK_Mar25 ORDER BY Year")
+    else:
+        # Default to general stats
+        filtered_df = query_db("SELECT * FROM ChristiesHK_Mar25")
     
     # Generate new visualizations based on filtered data
     brand_chart = create_brand_comparison(filtered_df)
@@ -88,15 +96,13 @@ def filter_data():
         avg_price = filtered_df['[Price Realized (USD)]'].mean()
         max_price = filtered_df['[Price Realized (USD)]'].max()
         lower_estimate = filtered_df['[Lower Estimate (USD)'].max()
-        higher_estimate = filtered_df['[Higher Estimate (USD)'].max()  # Using max() to get the highest estimate
+        higher_estimate = filtered_df['[Higher Estimate (USD)'].max()
     else:
         avg_price = 0
         max_price = 0
         lower_estimate = 0
         higher_estimate = 0
-
             
-    
     # Return the JSON data with all charts
     return jsonify({
         'brand_chart': brand_chart,
@@ -127,7 +133,7 @@ def create_brand_comparison(df=None):
         df = df.groupby('Brand')['[Price Realized (USD)]'].mean().reset_index().rename(
             columns={'[Price Realized (USD)]': 'Avg_Price'}).sort_values('Avg_Price', ascending=False)
     
-    # Create a bar chart using Altair (the non-standard library)
+    # Create a bar chart using Altair
     chart = alt.Chart(df).mark_bar().encode(
         x=alt.X('Brand:N', sort='-y'),
         y=alt.Y('Avg_Price:Q', title='Average Price (USD)'),
@@ -251,14 +257,6 @@ def get_stats():
                 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-# Add this to your Flask app temporarily for debugging
-@app.route('/debug')
-def debug():
-    df = query_db("SELECT * FROM ChristiesHK_Mar25 LIMIT 5")
-    return jsonify({
-        'column_types': {col: str(df[col].dtype) for col in df.columns},
-        'estimate_sample': df['Estimate (USD)'].tolist()
-    })
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
