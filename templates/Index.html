@@ -309,7 +309,7 @@
             Plotly.newPlot('leather-chart', JSON.parse('{{ leather_chart | safe }}').data, JSON.parse('{{ leather_chart | safe }}').layout, {responsive: true});
             
             // Load top bags
-            loadTopBags();
+            // loadTopBags(); comented off undo later if nesesary
             
             // Set up filter button
             document.getElementById('apply-filter').addEventListener('click', updateCharts);
