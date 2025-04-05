@@ -13,14 +13,14 @@
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #f8f9fa;
-            color: #8B0000;
+            background-color: #f5f5f5;
+            color: #6B0000;
         }
         .header {
             text-align: center;
             margin-bottom: 30px;
             padding: 20px;
-            background-color: #8B0000;
+            background-color: #6B0000;
             color: white;
             border-radius: 5px;
         }
@@ -36,21 +36,21 @@
             padding: 10px 15px;
             font-size: 16px;
             border-radius: 5px;
-            border: 1px solid #ddd;
+            border: 1px solid #bbb;
             background-color: white;
             cursor: pointer;
         }
         .chart-container {
             background-color: white;
             border-radius: 5px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
             padding: 20px;
             margin-bottom: 30px;
         }
         .chart-title {
             margin-top: 0;
-            color: #343a40;
-            border-bottom: 1px solid #eee;
+            color: #2c3e50;
+            border-bottom: 1px solid #ddd;
             padding-bottom: 10px;
         }
         .hidden {
@@ -60,6 +60,11 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
+        }
+        .stacked-charts {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
         }
         @media (max-width: 768px) {
             .two-column {
@@ -90,7 +95,7 @@
         <div id="general-section" class="chart-container hidden">
             <h2 class="chart-title">General Sale Performance</h2>
             
-            <div class="two-column">
+            <div class="stacked-charts">
                 <div id="saleRelativeEstimates"></div>
                 <div id="top10Sales"></div>
             </div>
@@ -169,10 +174,10 @@
             const data = [
                 {
                     x: ['Below Estimate', 'Within Estimate', 'Above Estimate', 'No Sale'],
-                    y: [12, 45, 23, 5], // Replace with your actual data
+                    y: [12, 45, 23, 5],
                     type: 'bar',
                     marker: {
-                        color: ['#ff6b6b', '#51cf66', '#fcc419', '#868e96']
+                        color: ['#cc0000', '#006600', '#b35900', '#555555']
                     }
                 }
             ];
@@ -196,11 +201,11 @@
                         'HERMES — Shiny Noir Porosus Crocodile Birkin 30', 'HERMES — Shiny Vert Cypres Porosus Crocodile Birkin 30',
                         'HERMES — Shiny Rouge Casaque Porosus Crocodile Birkin 30', 'HERMES — Shiny Gold Porosus Crocodile Birkin 30',
                         'HERMES — Shiny Rose Sakura Porosus Crocodile Birkin 30', 'HERMES — Shiny Bleu Electrique Porosus Crocodile Birkin 30'],
-                    x: [350000, 280000, 250000, 240000, 230000, 220000, 210000, 200000, 195000, 190000], // Replace with your actual data
+                    x: [350000, 280000, 250000, 240000, 230000, 220000, 210000, 200000, 195000, 190000],
                     type: 'bar',
                     orientation: 'h',
                     marker: {
-                        color: '#20c997'
+                        color: '#008000'
                     }
                 }
             ];
@@ -208,7 +213,19 @@
             const layout = {
                 title: 'TOP 10 MOST EXPENSIVE HANDBAGS',
                 xaxis: { title: 'Price Realized (USD)' },
-                margin: { t: 50, b: 100, l: 200 }
+                margin: { 
+                    t: 50, 
+                    b: 100, 
+                    l: 300,
+                    pad: 10
+                },
+                height: 600,
+                yaxis: {
+                    automargin: true,
+                    tickfont: {
+                        size: 12
+                    }
+                }
             };
 
             Plotly.newPlot('top10Sales', data, layout);
@@ -218,11 +235,11 @@
         function renderTotalSalesByBrand() {
             const data = [
                 {
-                    x: ['HERMES', 'CHANEL', 'LOUIS VUITTON', 'DIOR'],
-                    y: [3800000, 1200000, 800000, 500000], // Replace with your actual data
+                    x: ['HERMES', 'CHANEL', 'LOUIS VUITTON'],
+                    y: [3800000, 1200000, 800000, 500000],
                     type: 'bar',
                     marker: {
-                        color: ['#845ef7', '#5c7cfa', '#339af0', '#22b8cf']
+                        color: ['#5e35b1', '#3949ab', '#1e88e5', '#00897b']
                     }
                 }
             ];
@@ -266,7 +283,13 @@
                         "type": "quantitative",
                         "title": "Average Price (USD)"
                     },
-                    "color": {"field": "Brand", "type": "nominal"},
+                    "color": {
+                        "field": "Brand", 
+                        "type": "nominal",
+                        "scale": {
+                            "range": ["#5e35b1", "#3949ab", "#1e88e5", "#00897b"]
+                        }
+                    },
                     "tooltip": [
                         {"field": "Brand", "type": "nominal"},
                         {"field": "Average_Price_USD", "type": "quantitative"}
@@ -289,7 +312,7 @@
                     type: 'scatter',
                     marker: {
                         size: 12,
-                        color: ['#845ef7', '#845ef7', '#845ef7', '#845ef7', '#5c7cfa', '#5c7cfa', '#5c7cfa', '#5c7cfa', '#339af0', '#339af0', '#339af0', '#339af0', '#22b8cf', '#22b8cf', '#22b8cf', '#22b8cf']
+                        color: ['#5e35b1', '#5e35b1', '#5e35b1', '#5e35b1', '#3949ab', '#3949ab', '#3949ab', '#3949ab', '#1e88e5', '#1e88e5', '#1e88e5', '#1e88e5', '#00897b', '#00897b', '#00897b', '#00897b']
                     },
                     name: 'HERMES'
                 }
@@ -318,7 +341,7 @@
                     y: [350000, 250000, 240000, 230000, 200000, 195000, 190000, 220000, 210000, 280000],
                     type: 'bar',
                     marker: {
-                        color: '#1f77b4'
+                        color: '#0d47a1'
                     }
                 }
             ];
@@ -338,17 +361,12 @@
 
         // Chart 7: Price by Brand and Color
         function renderPriceByBrandColor() {
-            // This would be a more complex chart showing individual bag prices by color and brand
-            // For simplicity, we'll create a similar visualization to the Python stripplot
-            
             const brands = ['HERMES', 'CHANEL', 'LOUIS VUITTON', 'DIOR'];
             const colors = ['Himalayan', 'Rouge H', 'Bleu Saphir', 'Noir', 'Gold', 'Rose Sakura', 'Bleu Electrique', 'Vert Cypres', 'Rouge Casaque', 'White'];
             
-            // Generate some sample data
             let data = [];
             brands.forEach((brand, brandIdx) => {
                 colors.forEach((color, colorIdx) => {
-                    // Random price based on brand and color position
                     const price = 10000 + (brandIdx * 50000) + (colorIdx * 20000) + (Math.random() * 30000);
                     
                     data.push({
@@ -356,7 +374,7 @@
                         y: price,
                         name: brand,
                         marker: {
-                            color: ['#845ef7', '#5c7cfa', '#339af0', '#22b8cf'][brandIdx],
+                            color: ['#5e35b1', '#3949ab', '#1e88e5', '#00897b'][brandIdx],
                             size: 10
                         }
                     });
@@ -393,17 +411,12 @@
 
         // Chart 8: Average Price by Brand and Color
         function renderAvgPriceBrandColor() {
-            // This would show average prices by brand and color
-            // For simplicity, we'll create a similar visualization to the Python stripplot
-            
             const brands = ['HERMES', 'CHANEL', 'LOUIS VUITTON', 'DIOR'];
             const colors = ['Himalayan', 'Rouge H', 'Bleu Saphir', 'Noir', 'Gold', 'Rose Sakura', 'Bleu Electrique', 'Vert Cypres', 'Rouge Casaque', 'White'];
             
-            // Generate some sample data
             let data = [];
             brands.forEach((brand, brandIdx) => {
                 colors.forEach((color, colorIdx) => {
-                    // Average price based on brand and color position
                     const avgPrice = 10000 + (brandIdx * 50000) + (colorIdx * 20000);
                     
                     data.push({
@@ -411,7 +424,7 @@
                         y: avgPrice,
                         name: brand,
                         marker: {
-                            color: ['#845ef7', '#5c7cfa', '#339af0', '#22b8cf'][brandIdx],
+                            color: ['#5e35b1', '#3949ab', '#1e88e5', '#00897b'][brandIdx],
                             size: 12
                         }
                     });
@@ -454,7 +467,7 @@
                     y: [280000, 220000, 180000, 120000, 110000, 100000, 95000, 90000, 85000, 80000],
                     type: 'bar',
                     marker: {
-                        color: '#1f77b4'
+                        color: '#0d47a1'
                     }
                 }
             ];
