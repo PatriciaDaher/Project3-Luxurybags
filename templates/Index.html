@@ -7,7 +7,7 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Plotly.js -->
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
     <!-- Vega and Vega-Lite for Altair -->
     <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
@@ -149,41 +149,13 @@
             </div>
         </div>
 
-        <!-- Main Visualizations Row 1 -->
+        <!-- Main Visualization -->
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">Average Price by Brand</div>
                     <div class="card-body">
                         <div id="brand-chart" class="chart-container"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">Average Price by Color</div>
-                    <div class="card-body">
-                        <div id="color-chart" class="chart-container"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Main Visualizations Row 2 -->
-        <div class="row mt-4">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">Price Trends Over Years</div>
-                    <div class="card-body">
-                        <div id="year-chart" class="chart-container"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">Top Leathers by Average Price</div>
-                    <div class="card-body">
-                        <div id="leather-chart" class="chart-container"></div>
                     </div>
                 </div>
             </div>
@@ -273,9 +245,6 @@
             
             // Show loading state
             document.getElementById('brand-chart').innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"></div><p class="mt-2">Loading...</p></div>';
-            document.getElementById('color-chart').innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"></div><p class="mt-2">Loading...</p></div>';
-            document.getElementById('year-chart').innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"></div><p class="mt-2">Loading...</p></div>';
-            document.getElementById('leather-chart').innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"></div><p class="mt-2">Loading...</p></div>';
             
             // Fetch filtered data
             fetch(`/api/filter_data?filter_type=${encodeURIComponent(filterType)}`)
@@ -289,11 +258,6 @@
                     
                     // Update brand chart (Altair)
                     vegaEmbed('#brand-chart', JSON.parse(data.brand_chart), {actions: false}).catch(console.error);
-                    
-                    // Update other charts (Plotly)
-                    Plotly.newPlot('color-chart', JSON.parse(data.color_chart).data, JSON.parse(data.color_chart).layout, {responsive: true});
-                    Plotly.newPlot('year-chart', JSON.parse(data.year_chart).data, JSON.parse(data.year_chart).layout, {responsive: true});
-                    Plotly.newPlot('leather-chart', JSON.parse(data.leather_chart).data, JSON.parse(data.leather_chart).layout, {responsive: true});
                 })
                 .catch(error => console.error('Error updating charts:', error));
         }
@@ -303,13 +267,8 @@
             // Load initial brand chart (Altair)
             vegaEmbed('#brand-chart', JSON.parse('{{ brand_chart | safe }}'), {actions: false}).catch(console.error);
             
-            // Load initial other charts (Plotly)
-            Plotly.newPlot('color-chart', JSON.parse('{{ color_chart | safe }}').data, JSON.parse('{{ color_chart | safe }}').layout, {responsive: true});
-            Plotly.newPlot('year-chart', JSON.parse('{{ year_chart | safe }}').data, JSON.parse('{{ year_chart | safe }}').layout, {responsive: true});
-            Plotly.newPlot('leather-chart', JSON.parse('{{ leather_chart | safe }}').data, JSON.parse('{{ leather_chart | safe }}').layout, {responsive: true});
-            
             // Load top bags
-            // loadTopBags(); comented off undo later if nesesary
+            loadTopBags();
             
             // Set up filter button
             document.getElementById('apply-filter').addEventListener('click', updateCharts);

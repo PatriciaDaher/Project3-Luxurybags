@@ -46,17 +46,11 @@ def home():
     
     # Create default visualizations (when no filters are applied)
     brand_chart = create_brand_comparison()
-    color_chart = create_color_comparison()
-    year_chart = create_year_trend()
-    leather_chart = create_leather_comparison()
     
     # Render the template with initial data
     return render_template('/index.html', 
                           filter_options=filter_options,
                           brand_chart=brand_chart,
-                          color_chart=color_chart,
-                          year_chart=year_chart,
-                          leather_chart=leather_chart,
                           stats=price_stats)
 
 # API endpoint to filter data based on user selection
@@ -87,9 +81,6 @@ def filter_data():
     
     # Generate new visualizations based on filtered data
     brand_chart = create_brand_comparison(filtered_df)
-    color_chart = create_color_comparison(filtered_df)
-    year_chart = create_year_trend(filtered_df)
-    leather_chart = create_leather_comparison(filtered_df)
     
     # Get price stats for the filtered data
     if len(filtered_df) > 0:
@@ -106,9 +97,6 @@ def filter_data():
     # Return the JSON data with all charts
     return jsonify({
         'brand_chart': brand_chart,
-        'color_chart': color_chart,
-        'year_chart': year_chart,
-        'leather_chart': leather_chart,
         'stats': {
             'total_items': len(filtered_df),
             'avg_price': float(avg_price),
@@ -146,80 +134,6 @@ def create_brand_comparison(df=None):
     ).interactive()
     
     return chart.to_json()
-
-# Helper function to create color comparison visualization
-def create_color_comparison(df=None):
-    if df is None:
-        # If no DataFrame provided, query the database
-        df = query_db("""
-            SELECT Color, AVG([Price Realized (USD)]) as Avg_Price
-            FROM ChristiesHK_Mar25
-            GROUP BY Color
-            ORDER BY Avg_Price DESC
-        """)
-    else:
-        # Otherwise use the provided DataFrame
-        df = df.groupby('Color')['[Price Realized (USD)]'].mean().reset_index().rename(
-            columns={'[Price Realized (USD)]': 'Avg_Price'}).sort_values('Avg_Price', ascending=False)
-    
-    # Create visualization with Plotly
-    fig = px.bar(df, x='Color', y='Avg_Price', 
-                title='Average Price by Color',
-                labels={'Avg_Price': 'Average Price (USD)', 'Color': 'Color'},
-                color='Color')
-    
-    return json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-
-# Helper function to create year trend visualization
-def create_year_trend(df=None):
-    if df is None:
-        # If no DataFrame provided, query the database
-        df = query_db("""
-            SELECT Year, AVG([Price Realized (USD)]) as Avg_Price
-            FROM ChristiesHK_Mar25
-            GROUP BY Year
-            ORDER BY Year
-        """)
-    else:
-        # Otherwise use the provided DataFrame
-        if 'Year' in df.columns:
-            df = df.groupby('Year')['[Price Realized (USD)]'].mean().reset_index().rename(
-                columns={'[Price Realized (USD)]': 'Avg_Price'}).sort_values('Year')
-        else:
-            # If no Year column, use a dummy DataFrame
-            df = pd.DataFrame({'Year': ['No Year Data'], 'Avg_Price': [0]})
-    
-    # Create visualization with Plotly
-    fig = px.line(df, x='Year', y='Avg_Price', 
-                 title='Price Trends Over Years',
-                 labels={'Avg_Price': 'Average Price (USD)', 'Year': 'Year'},
-                 markers=True)
-    
-    return json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-
-# Helper function to create leather comparison visualization
-def create_leather_comparison(df=None):
-    if df is None:
-        # If no DataFrame provided, query the database
-        df = query_db("""
-            SELECT Leather, AVG([Price Realized (USD)]) as Avg_Price
-            FROM ChristiesHK_Mar25
-            GROUP BY Leather
-            ORDER BY Avg_Price DESC
-            LIMIT 10
-        """)
-    else:
-        # Otherwise use the provided DataFrame
-        df = df.groupby('Leather')['[Price Realized (USD)]'].mean().reset_index().rename(
-            columns={'[Price Realized (USD)]': 'Avg_Price'}).sort_values('Avg_Price', ascending=False).head(10)
-    
-    # Create visualization with Plotly
-    fig = px.bar(df, x='Leather', y='Avg_Price', 
-                title='Top 10 Leathers by Average Price',
-                labels={'Avg_Price': 'Average Price (USD)', 'Leather': 'Leather Type'},
-                color='Leather')
-    
-    return json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
 # API endpoint to get top performing bags
 @app.route('/api/top_bags')
