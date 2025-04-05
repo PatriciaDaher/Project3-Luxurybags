@@ -72,10 +72,6 @@
             border-color: #6d0000;
         }
         
-        .top-bags-table {
-            font-size: 0.9rem;
-        }
-        
         footer {
             background-color: #343a40;
             color: white;
@@ -161,33 +157,6 @@
             </div>
         </div>
 
-        <!-- Top Bags Table -->
-        <div class="row mt-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">Top 10 Most Expensive Bags</div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-striped table-hover top-bags-table">
-                                <thead>
-                                    <tr>
-                                        <th>Brand</th>
-                                        <th>Description</th>
-                                        <th>Leather</th>
-                                        <th>Color</th>
-                                        <th>Price (USD)</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="top-bags-tbody">
-                                    <!-- Top bags will be loaded here via JavaScript -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- Key Insights Section -->
         <div class="row mt-4">
             <div class="col-12">
@@ -216,29 +185,6 @@
     <!-- JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Function to load top bags data
-        function loadTopBags() {
-            fetch('/api/top_bags')
-                .then(response => response.json())
-                .then(data => {
-                    const tbody = document.getElementById('top-bags-tbody');
-                    tbody.innerHTML = '';
-                    
-                    data.forEach(bag => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>${bag.Brand}</td>
-                            <td>${bag.Description}</td>
-                            <td>${bag.Leather}</td>
-                            <td>${bag.Color}</td>
-                            <td>$${parseFloat(bag['Price Realized (USD)']).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-                        `;
-                        tbody.appendChild(row);
-                    });
-                })
-                .catch(error => console.error('Error loading top bags:', error));
-        }
-
         // Function to update charts based on filters
         function updateCharts() {
             const filterType = document.getElementById('filter-select').value;
@@ -266,9 +212,6 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Load initial brand chart (Altair)
             vegaEmbed('#brand-chart', JSON.parse('{{ brand_chart | safe }}'), {actions: false}).catch(console.error);
-            
-            // Load top bags
-            loadTopBags();
             
             // Set up filter button
             document.getElementById('apply-filter').addEventListener('click', updateCharts);
