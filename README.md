@@ -12,14 +12,13 @@ Our analysis offers valuable insights for collectors, investors, and industry pr
 ## Repository Contents
 ```
 Luxury-handbag-visualization
-|_ Index.html
-|_ luxury_handbag_auctions.sqlite
-|_ Christies Hong Kong March 2025 Cleaned .csv
-|_ Cleaned_Enhanced_Luxury_Bag_Data.csv
-|_ LuxuryBags.ipynb
-Presentation projectf.DS_Store
-README.md
-
+|_ Index.html  #containing the html and javascript
+|_ luxury_handbag_auctions.sqlite  #the database
+|_ Christies Hong Kong March 2025 Cleaned .csv  #The data folder uploaded before cleaning
+|_ Cleaned_Enhanced_Luxury_Bag_Data.csv #The folder downloaded after cleaning
+|_ LuxuryBags.ipynb #jupyter notebook
+Presentation projectf.DS_Store #powerpoint presentation
+README.md #readme folder containing information about the project and how to access the visualizations. 
 ```
 ## How to Use and Interact with the Project
 
