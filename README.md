@@ -14,14 +14,12 @@ Our analysis offers valuable insights for collectors, investors, and industry pr
 Luxury-handbag-visualization
 |_ Index.html
 |_ luxury_handbag_auctions.sqlite
-.DS_Store
-Christies Hong Kong March 2025 Cleaned .csv
-Cleaned_Enhanced_Luxury_Bag_Data.csv
-LuxuryBags.ipynb
-Presentation project 3.pdf
+|_ Christies Hong Kong March 2025 Cleaned .csv
+|_ Cleaned_Enhanced_Luxury_Bag_Data.csv
+|_ LuxuryBags.ipynb
+Presentation projectf.DS_Store
 README.md
-app.py
-Luxury_handbag_auctions.sqlite
+
 ```
 ## How to Use and Interact with the Project
 
