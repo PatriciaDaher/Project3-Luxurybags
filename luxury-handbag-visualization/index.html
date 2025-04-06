@@ -95,9 +95,9 @@
                     <option value="">Select a Visualization</option>
                     <option value="general">VISUALIZATIONS 1: General Sale Performance</option>
                     <option value="brand">VISUALIZATIONS 2: General Sale Results by BRAND</option>
-                    <option value="brandYear">VISUALIZATIONS 3: Average Prices by Brand and Year</option>
+                    <option value="brandYear">VISUALIZATIONS 3: Average Prices by Brand and YEAR</option>
                     <option value="color">VISUALIZATIONS 4: Price Results by COLOR</option>
-                    <option value="leather">VISUALIZATIONS 5: Price realized by Leather</option>
+                    <option value="leather">VISUALIZATIONS 5: Price realized by LEATHER</option>
                 </select>
             </div>
 
@@ -119,9 +119,9 @@
                 <div id="avgPriceByBrand"></div>
             </div>
 
-            <!-- Average Prices by Brand and Year -->
+            <!-- Average Prices brand and YEAR -->
             <div id="brandYear-section" class="chart-container hidden">
-                <h2 class="chart-title">Average Prices by Brand and Year</h2>
+                <h2 class="chart-title">Average Prices by Brand and YEAR </h2>
                 
                 <div id="avgPriceByBrandYear"></div>
             </div>
@@ -137,9 +137,9 @@
                 <div id="avgPriceBrandColor"></div>
             </div>
 
-            <!-- Price realized by Leather -->
+            <!-- Price realized by LEATHER -->
             <div id="leather-section" class="chart-container hidden">
-                <h2 class="chart-title">Price realized by Leather</h2>
+                <h2 class="chart-title">Price realized by LEATHER</h2>
                 
                 <div id="avgPriceByLeather"></div>
             </div>
@@ -398,7 +398,7 @@
             vegaEmbed('#avgPriceByBrand', vlSpec);
         }
 
-        // Chart 5: Average Price by Brand and Year
+        // Chart 5: Average Price by Brand and YEAR
         function renderAvgPriceByBrandYear() {
             // Query data from the database
             const query = `
