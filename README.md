@@ -11,8 +11,9 @@ Our analysis offers valuable insights for collectors, investors, and industry pr
 
 ## Repository Contents
 ```
-Templates
-|  |_ Index.html
+Luxury-handbag-visualization
+|_ Index.html
+|_ luxury_handbag_auctions.sqlite
 .DS_Store
 Christies Hong Kong March 2025 Cleaned .csv
 Cleaned_Enhanced_Luxury_Bag_Data.csv
@@ -32,7 +33,7 @@ Navigate to the project directory: cd project project name Project3-Luxurybags
 
 2. Install the required packages:
    ```
-   pip install pandas sqlite3 plotly altair
+   pip install pandas matplotlib sqlite3 plotly altair
    ```
 3. start the server by navigating to the directory, particularly the luxury-handbag-visualization folder, and in the folder, open using python's built-in server type the following:
    ```
@@ -41,7 +42,7 @@ Navigate to the project directory: cd project project name Project3-Luxurybags
    (For Windows, if python3 doesn't work, try python or py instead.)
 
 4. To `Access the server: Open your web browser and navigate 
-Open a browser and go to:
+Open a browser and go to any of these or the link provided:
 http://localhost:8000 or http://127.0.0.1:8000
 
 ### Interactive Features
@@ -63,31 +64,22 @@ The Sqlite database contains auction data with information about lots number, br
 
 
 ## Visualizations & Interactions  (HTML Content)   
-1- **Key Metrics**: 
-a- Total Items:  247 unique records
-b- Average Price displaying the average price per lot 
-c- Highest Price displaying the lot yielding the highest price
-d- Highest Price estimate displaying the estimated range for the highest price
-
-
-
 
 2- **Analysis Dropdown Menu displaying a total of 9 charts**
-Visualizations 1:  Sale Information: 
-	a- sale total (Metric)
-b- Bar Chart 1 Auction Performance: Lot Sales Relative to Estimates
-c- Bar Chart 2 Top 10 Sale
-Visualizations 2: Brand 
+Visualizations 1: General Sale Performance
+b- Bar Chart 1 Lot Sales Relative to Estimates
+c- Bar Chart 2 Top 10 Most Expensive Handbags
+Visualizations 2: General Sale Results by BRAND
 	a- Bar Chart 1: Total Sales By Brand 
 	b- Bar Chart 2: Average Sales by Brand
-Visualizations 3: Year
-	a- Plot Chart 1: Average Sales by year
-Visualizations 4: Color
-	a- Bar Chart 1: Average Price Realized by Color
+Visualizations 3: Average prices by Brand and Year
+	a- Plot Chart 1: Average Price Results by Brand per Year Manufactured
+Visualizations 4: Price results by COLOR
+	a- Bar Chart 1: Average Auction Price by Color
 	b- Plot Chart 2: Price Realized for Each Bag by Brand Based on Color
-	b- Plot Chart 2: Average Price Realized by Brand Based on Color
+	b- Plot Chart 3: Average Price Realized by Brand Based on Color
 Visualization 5: Leather
-   a- Bar Chart 1: Average Price Realized by Color
+   a- Bar Chart 1: Average Price by Leather type
 
 
 ## Ethical Considerations
@@ -121,9 +113,9 @@ We believe that transparent data analysis can help consumers and industry profes
 
 ## Technologies Used
 - **Database**: SQLite
-- **Backend**: Flask, Python, Pandas
+- **Backend**: Java Script, Python, Pandas
 - **Visualization**: Matplotlib, Plotly, Altair (new library not covered in class)
-- **Frontend**: HTML, CSS, JavaScript, Bootstrap
+- **Frontend**: HTML, CSS, Bootstrap
 
 
 ## Project Contributors
