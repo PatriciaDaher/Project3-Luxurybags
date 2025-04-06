@@ -33,7 +33,7 @@ Navigate to the project directory: cd project project name Project3-Luxurybags
 
 2. Install the required packages:
    ```
-   pip install pandas matplotlib sqlite3 plotly altair
+   pip install python pandas matplotlib sqlite3 plotly altair
    ```
 3. start the server by navigating to the directory, particularly the luxury-handbag-visualization folder, and in the folder, open using python's built-in server type the following:
    ```
@@ -112,7 +112,7 @@ We believe that transparent data analysis can help consumers and industry profes
 
 
 ## Technologies Used
-- **Database**: SQLite
+- **Database**: SQLite3
 - **Backend**: Java Script, Python, Pandas
 - **Visualization**: Matplotlib, Plotly, Altair (new library not covered in class)
 - **Frontend**: HTML, CSS, Bootstrap
@@ -131,7 +131,7 @@ Auction data specifically from Christie's Hong Kong March 2025 Handbags Online s
 
 ## References for Data and Code
 All data in the csv files and database has been extracted from Christie's auction results for Christie's Hong Kong March 2025 Online Handbags sale titled : Handbags Online: The Hong Kong Edit  https://www.christies.com/en/results
-All code in app.py, index.html and LuxuryBags.jpynb has been extracted from ChatGbt and Deep Seek and adjusted by the project contributors
+All code in app.py, index.html and LuxuryBags.jpynb has been extracted from ChatGbt and Deep Seek, tweeked by Deepseek, and adjusted by the project contributors.
 Chat Gbt Website: https://chatgpt.com/
 Deep Seek Website: https://chat.deepseek.com/sign_in
 
