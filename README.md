@@ -32,14 +32,17 @@ Navigate to the project directory: cd project project name Project3-Luxurybags
 
 2. Install the required packages:
    ```
-   pip install flask pandas sqlite3 plotly altair
+   pip install pandas sqlite3 plotly altair
    ```
-3. Run the Flask application:
+3. start the server by navigating to the directory, particularly the luxury-handbag-visualization folder, and in the folder, open using python's built-in server type the following:
    ```
-   python app.py
+   python3 -m http.server 8000
    ```
-4. Open your web browser and navigate to `http://127.0.0.1:5001`
+   (For Windows, if python3 doesn't work, try python or py instead.)
 
+4. To `Access the server: Open your web browser and navigate 
+Open a browser and go to:
+http://localhost:8000 or http://127.0.0.1:8000
 
 ### Interactive Features
 - **Visualize Data**: Use the dropdown menue to view Sales Analysis based on options such as Sale Results, Brand, Year, Color, and Leather type. 
