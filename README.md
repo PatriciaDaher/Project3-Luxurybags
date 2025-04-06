@@ -110,16 +110,14 @@ We believe that transparent data analysis can help consumers and industry profes
 
 ## Technologies Used
 - **Database**: SQLite3
-- **Backend**: Java Script, Python, Pandas
-- **Visualization**: Matplotlib, Plotly, Altair (new library not covered in class)
+- **Backend**: Java Script, Python, Pandas, sql.js, Vega, Vega-Lite, Vega-Embed  (new libraries
+- **Visualization**: Matplotlib, Plotly.js , Altair,  (new library)
 - **Frontend**: HTML, CSS, Bootstrap
-
 
 ## Project Contributors
 - Sade Beckles
 - Patricia Daher
 - Arisleyda Reyes
-
 
 ## Data Sources
 Christie's Auction House website: 
