@@ -408,9 +408,9 @@
             const query = `
                 SELECT 
                     Brand,
-                    [Average Price USD] as Avg_Price_USD
+                    [Average_Price_USD] as Avg_Price_USD
                 FROM Brand_Average_Prices
-                ORDER BY [Average Price USD] DESC
+                ORDER BY [Average_Price_USD] DESC
             `;
             const results = executeQuery(query);
             
