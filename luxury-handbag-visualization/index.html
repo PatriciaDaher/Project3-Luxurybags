@@ -115,8 +115,11 @@
             <div id="brand-section" class="chart-container hidden">
                 <h2 class="chart-title">General Sale Results by BRAND</h2>
                 
-                <div id="totalSalesByBrand"></div>
-                <div id="avgPriceByBrand"></div>
+                <div class="stacked-charts">
+                    <div id="totalSalesByBrand"></div>
+                    <div id="avgPriceByBrand"></div>
+                    <div id="avgPricePerBagByBrand"></div>
+                </div>
             </div>
 
             <!-- Average Prices brand and YEAR -->
@@ -212,6 +215,7 @@
             } else if (selectedValue === 'brand') {
                 renderTotalSalesByBrand();
                 renderAvgPriceByBrand();
+                renderAvgPricePerBagByBrand();
             } else if (selectedValue === 'brandYear') {
                 renderAvgPriceByBrandYear();
             } else if (selectedValue === 'color') {
@@ -396,6 +400,47 @@
             };
 
             vegaEmbed('#avgPriceByBrand', vlSpec);
+        }
+
+        // New Chart: Average Price Per Bag by Brand
+        function renderAvgPricePerBagByBrand() {
+            // Query data from the Brand_Average_Prices table
+            const query = `
+                SELECT 
+                    Brand,
+                    [Average Price USD] as Avg_Price_USD
+                FROM Brand_Average_Prices
+                ORDER BY [Average Price USD] DESC
+            `;
+            const results = executeQuery(query);
+            
+            // Prepare data for the chart
+            const brands = results.map(row => row.Brand);
+            const prices = results.map(row => row.Avg_Price_USD);
+            
+            const data = [{
+                x: brands,
+                y: prices,
+                type: 'bar',
+                marker: {
+                    color: ['#8e24aa', '#5e35b1', '#3949ab', '#1e88e5']
+                }
+            }];
+
+            const layout = {
+                title: 'AVERAGE PRICE PER BAG BY BRAND',
+                xaxis: { 
+                    title: 'Brand',
+                    tickangle: 0
+                },
+                yaxis: { 
+                    title: 'Average Price (USD)',
+                    range: [0, Math.max(...prices) * 1.1] // Auto-scale with 10% padding
+                },
+                margin: { t: 50, b: 100 }
+            };
+
+            Plotly.newPlot('avgPricePerBagByBrand', data, layout);
         }
 
         // Chart 5: Average Price by Brand and YEAR
